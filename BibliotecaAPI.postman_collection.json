@@ -1,0 +1,538 @@
+{
+	"info": {
+		"_postman_id": "aa8239f9-d895-42f2-a2e0-bfe90105e16b",
+		"name": "Biblioteca API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47940086",
+		"_collection_link": "https://henry-s-team-11.postman.co/workspace/Team-Workspace~8701391b-d6fb-409a-8957-e79d7b40921d/collection/47940086-aa8239f9-d895-42f2-a2e0-bfe90105e16b?action=share&source=collection_link&creator=47940086"
+	},
+	"item": [
+		{
+			"name": "CRUD Libros",
+			"item": [
+				{
+					"name": "Listar todos los libros",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"La respuesta es un array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.test(\"Cada libro tiene las propiedades correctas\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(libro) {",
+									"        pm.expect(libro).to.have.property(\"id\");",
+									"        pm.expect(libro).to.have.property(\"titulo\");",
+									"        pm.expect(libro).to.have.property(\"autor\");",
+									"        pm.expect(libro).to.have.property(\"categoria\");",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Tipos de datos de cada propiedad\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(libro) {",
+									"        pm.expect(libro.id).to.be.a(\"number\");",
+									"        pm.expect(libro.titulo).to.be.a(\"string\");",
+									"        pm.expect(libro.autor).to.be.a(\"string\");",
+									"        pm.expect(libro.categoria).to.be.a(\"string\");",
+									"    });",
+									"});",
+									"",
+									"// Test opcional: asegurar que hay al menos 1 libro en la lista",
+									"pm.test(\"La lista no está vacía\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/libros",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"libros"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener libro por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta 200 o 404\", function () {",
+									"    pm.expect([200,404]).to.include(pm.response.code);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"El libro tiene las propiedades correctas\", function () {",
+									"        pm.expect(jsonData).to.have.property(\"id\");",
+									"        pm.expect(jsonData).to.have.property(\"titulo\");",
+									"        pm.expect(jsonData).to.have.property(\"autor\");",
+									"        pm.expect(jsonData).to.have.property(\"categoria\");",
+									"    });",
+									"",
+									"    pm.test(\"Tipos de datos correctos\", function () {",
+									"        pm.expect(jsonData.id).to.be.a(\"number\");",
+									"        pm.expect(jsonData.titulo).to.be.a(\"string\");",
+									"        pm.expect(jsonData.autor).to.be.a(\"string\");",
+									"        pm.expect(jsonData.categoria).to.be.a(\"string\");",
+									"    });",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/libros/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"libros",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear libro (POST)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"El libro fue creado con propiedades correctas\", function () {",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData).to.have.property(\"titulo\");",
+									"    pm.expect(jsonData).to.have.property(\"autor\");",
+									"    pm.expect(jsonData).to.have.property(\"categoria\");",
+									"});",
+									"",
+									"// Guardar el ID del libro creado en una variable de entorno",
+									"pm.environment.set(\"libro_id\", jsonData.id);",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"titulo\": \"El Señor De Los Anillos\",\n  \"autor\": \"J.R.R. Tolkien\",\n  \"categoria\": \"General\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/libros",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"libros"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar libro (PUT)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta 200 o 404\", function () {",
+									"    pm.expect([200,404]).to.include(pm.response.code);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"El libro actualizado tiene las propiedades correctas\", function () {",
+									"        pm.expect(jsonData).to.have.property(\"id\");",
+									"        pm.expect(jsonData).to.have.property(\"titulo\");",
+									"        pm.expect(jsonData).to.have.property(\"autor\");",
+									"        pm.expect(jsonData).to.have.property(\"categoria\");",
+									"    });",
+									"}",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"titulo\": \"Cien años\",\n  \"autor\": \"Gabriel García Márquez\",\n  \"categoria\": \"General\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/libros/1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"libros",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar libro (DELETE)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta 200 o 404\", function () {",
+									"    pm.expect([200,404]).to.include(pm.response.code);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    pm.test(\"Se eliminó el libro correctamente\", function () {",
+									"        pm.expect(jsonData).to.have.property(\"mensaje\", \"Libro eliminado\");",
+									"    });",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/libros/3",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"libros",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Evaluaciones Libros",
+			"item": [
+				{
+					"name": "Evaluación Infantil",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Infantil aprobado\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.status).to.eql(\"APROBADO\");",
+									"    pm.expect(json.data.categoria).to.eql(\"Infantil\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/evaluaciones/libros?edad=10&suscripcion=regular",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"evaluaciones",
+								"libros"
+							],
+							"query": [
+								{
+									"key": "edad",
+									"value": "10"
+								},
+								{
+									"key": "suscripcion",
+									"value": "regular"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Evaluación Juvenil",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Juvenil aprobado\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.status).to.eql(\"APROBADO\");",
+									"    pm.expect(json.data.categoria).to.eql(\"Juvenil\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/evaluaciones/libros?edad=15&suscripcion=regular",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"evaluaciones",
+								"libros"
+							],
+							"query": [
+								{
+									"key": "edad",
+									"value": "15"
+								},
+								{
+									"key": "suscripcion",
+									"value": "regular"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Evaluación General",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"General aprobado\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.status).to.eql(\"APROBADO\");",
+									"    pm.expect(json.data.categoria).to.eql(\"General\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/evaluaciones/libros?edad=30&suscripcion=regular",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"evaluaciones",
+								"libros"
+							],
+							"query": [
+								{
+									"key": "edad",
+									"value": "30"
+								},
+								{
+									"key": "suscripcion",
+									"value": "regular"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Evaluación Premium",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Premium aprobado con acceso digital\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.status).to.eql(\"APROBADO\");",
+									"    pm.expect(json.data.categoria).to.eql(\"General\");",
+									"    pm.expect(json.data.acceso).to.include(\"Libros Digitales Exclusivos\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/evaluaciones/libros?edad=25&suscripcion=premium",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"evaluaciones",
+								"libros"
+							],
+							"query": [
+								{
+									"key": "edad",
+									"value": "25"
+								},
+								{
+									"key": "suscripcion",
+									"value": "premium"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
